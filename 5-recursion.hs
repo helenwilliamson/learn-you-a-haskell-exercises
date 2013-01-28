@@ -55,10 +55,13 @@ stepReverseSign number step = (abs number + step) * negate(signum number)
  - 
  - You may find the stepReverseSign function handy
  -}
-
 piCalc :: (Fractional a, Integral b, Ord a) => a -> (a, b)
-piCalc a = piCalc' 1 0.0 0.001 0
+piCalc tolerance = piCalc' 1 0.0 tolerance 0
 
 piCalc' :: (Ord a, Fractional a, Integral b) => a -> a -> a -> b -> (a, b)
-piCalc' w x y z = undefined
-
+piCalc' currentDenominator currentPi tolerance count 
+    | doneEnough = (newPi, count)
+    | otherwise = piCalc' newDenominator newPi tolerance (count + 1)
+    where newPi = currentPi + (4 / currentDenominator)
+          newDenominator = stepReverseSign currentDenominator 2
+          doneEnough = abs (newPi - currentPi) < tolerance
